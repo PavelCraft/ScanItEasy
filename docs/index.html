@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ScanItEasy помогает конвертировать, объединять и обрабатывать документы, PDF и изображения быстро, гибко и бесплатно.">
+  <title>ScanItEasy — работа с документами, PDF и изображениями</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="ScanItEasy — к началу страницы">
+      <img class="brand-logo" src="assets/scaniteasy-logo.png" alt="">
+      <span>ScanItEasy</span>
+    </a>
+    <nav class="header-nav" aria-label="Навигация">
+      <a class="header-link" href="#top">Возможности ScanItEasy</a>
+      <a class="header-link" href="ghostscript/">Ghostscript</a>
+      <span class="language-switch" aria-label="Выбор языка">
+        <a class="is-active" href="./" lang="ru" aria-current="page">RU</a>
+        <a href="en/" lang="en">EN</a>
+      </span>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero section-shell" aria-labelledby="hero-title">
+      <div class="eyebrow">Документы, PDF и изображения</div>
+      <h1 id="hero-title">Конвертируйте и объединяйте файлы быстро, просто и бесплатно</h1>
+      <p class="product-intro">
+        ScanItEasy выполняет повседневные операции с документами и изображениями локально на вашем компьютере:
+        от конвертации Word и PDF до гибкого выбора страниц и имитации сканирования прошитых документов.
+      </p>
+      <div class="hero-actions">
+        <a class="primary-link" href="#scan-simulation">Посмотреть основной режим</a>
+        <a class="secondary-link" href="#other-features">Другие возможности</a>
+      </div>
+
+      <div class="featured-mode" id="scan-simulation">
+        <div class="eyebrow">Уникальная функциональность</div>
+        <h2>Режим имитации сканирования</h2>
+        <p class="featured-lead">Загрузите документ Word и последнюю часть — получите один готовый PDF.</p>
+      </div>
+      <div class="result-card hero-result">
+        <div class="result-icon" aria-hidden="true">PDF</div>
+        <div>
+          <h2>Что делает программа</h2>
+          <p>
+            Объединяет выбранные части документа, переводит электронные страницы
+            в чёрно-белый вид и добавляет визуальные элементы прошивки.
+          </p>
+        </div>
+      </div>
+      <p class="hero-copy">
+        В основном файле Word могут находиться любые страницы документа.
+        Последняя часть — например, подписанная или заверенная страница — загружается
+        отдельно. ScanItEasy объединяет всё и имитирует сканирование прошитого документа.
+      </p>
+
+      <div class="transformation" aria-label="Документ до и после обработки">
+        <article class="document-state before-state">
+          <div class="state-heading">
+            <span class="state-number">1</span>
+            <div>
+              <h2>Что загружаем</h2>
+              <p>Два исходных файла.</p>
+            </div>
+          </div>
+          <div class="input-files">
+            <article class="input-file">
+              <div class="file-heading">
+                <span class="file-badge word-badge">DOCX</span>
+                <div>
+                  <h3>Документ Word</h3>
+                  <p>2 страницы</p>
+                </div>
+              </div>
+              <button class="source-preview source-stack" type="button" data-open-page="before" data-page-index="0" aria-label="Показать страницы документа Word">
+                <img src="assets/До/Перевод паспорта гражданина Листенбурга_pymu_page_002.png" alt="Вторая страница документа Word" loading="lazy">
+                <img src="assets/До/Перевод паспорта гражданина Листенбурга_pymu_page_001.png" alt="Первая страница документа Word">
+              </button>
+              <p class="file-caption">Основные страницы документа находятся внутри одного файла.</p>
+            </article>
+
+            <span class="input-plus" aria-label="и">+</span>
+
+            <article class="input-file">
+              <div class="file-heading">
+                <span class="file-badge scan-badge">PNG/PDF</span>
+                <div>
+                  <h3>Последняя часть</h3>
+                  <p>загружается отдельно</p>
+                </div>
+              </div>
+              <button class="source-preview single-source" type="button" data-open-page="before" data-page-index="2" aria-label="Показать последнюю часть документа">
+                <img src="assets/До/not-notary-translation-light.png" alt="Последняя часть с подписями и печатями" loading="lazy">
+              </button>
+              <p class="file-caption">Например, отсканированная страница с подписями и печатями.</p>
+            </article>
+          </div>
+          <ul class="state-list">
+            <li>вы выбираете основной файл Word;</li>
+            <li>затем добавляете последнюю часть документа.</li>
+          </ul>
+        </article>
+
+        <div class="process-arrow" aria-hidden="true">
+          <span>ScanItEasy</span>
+          <svg viewBox="0 0 120 48" role="img">
+            <path d="M4 24h101M88 7l19 17-19 17"></path>
+          </svg>
+        </div>
+
+        <article class="document-state after-state">
+          <div class="state-heading">
+            <span class="state-number">2</span>
+            <div>
+              <h2>Что получаем</h2>
+              <p>Один готовый файл.</p>
+            </div>
+          </div>
+          <div class="output-heading">
+            <span class="file-badge pdf-badge">PDF</span>
+            <div>
+              <h3>Готовый документ</h3>
+              <p>Все страницы в одном PDF</p>
+            </div>
+          </div>
+          <button class="paper-stack" type="button" data-open-page="after" aria-label="Открыть страницы после обработки">
+            <img src="assets/После/Перевод паспорта гражданина Листенбурга_page_003.png" alt="Последняя страница готового PDF" loading="lazy">
+            <img src="assets/После/Перевод паспорта гражданина Листенбурга_page_002.png" alt="Перевод после имитации сканирования" loading="lazy">
+            <img src="assets/После/Перевод паспорта гражданина Листенбурга_page_001.png" alt="Паспорт после имитации сканирования">
+          </button>
+          <ul class="state-list">
+            <li>исходные части объединены в один PDF;</li>
+            <li>электронные листы выглядят так, будто их распечатали на чёрно-белом принтере и отсканировали;</li>
+            <li>ленты и сгибы создают вид прошитого документа.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="comparison-section" id="how-it-works" aria-labelledby="comparison-title">
+      <div class="section-shell">
+        <div class="section-intro">
+          <div class="eyebrow">Посмотрите внимательнее</div>
+          <h2 id="comparison-title">Одна и та же страница до и после</h2>
+          <p>Переключайте состояние или переходите между страницами документа.</p>
+        </div>
+
+        <div class="comparison-card">
+          <div class="view-switch" role="group" aria-label="Состояние документа">
+            <button class="switch-button is-active" type="button" data-view="before" aria-pressed="true">До обработки</button>
+            <button class="switch-button" type="button" data-view="after" aria-pressed="false">После обработки</button>
+          </div>
+
+          <div class="viewer">
+            <button class="page-arrow previous" type="button" aria-label="Предыдущая страница">&#8592;</button>
+            <button class="page-image-button" type="button" aria-label="Открыть страницу крупнее">
+              <img id="comparison-image" src="assets/До/Перевод паспорта гражданина Листенбурга_pymu_page_001.png" alt="Первая страница до обработки">
+            </button>
+            <button class="page-arrow next" type="button" aria-label="Следующая страница">&#8594;</button>
+          </div>
+
+          <div class="viewer-footer">
+            <div>
+              <strong id="page-title">Страница 1 — паспорт</strong>
+              <p id="page-description">Изображение паспорта находится на обычной белой странице.</p>
+            </div>
+            <span class="page-counter" id="page-counter">1 / 3</span>
+          </div>
+
+          <div class="page-dots" role="group" aria-label="Выбор страницы">
+            <button class="page-dot is-active" type="button" data-page="0" aria-label="Страница 1" aria-current="true"></button>
+            <button class="page-dot" type="button" data-page="1" aria-label="Страница 2"></button>
+            <button class="page-dot" type="button" data-page="2" aria-label="Страница 3"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-section section-shell" id="other-features" aria-labelledby="features-title">
+      <div class="section-intro">
+        <div class="eyebrow">Не только имитация сканирования</div>
+        <h2 id="features-title">Другие возможности ScanItEasy</h2>
+        <p>Выберите нужную операцию, добавьте файлы и при необходимости настройте страницы и качество результата.</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <span class="feature-icon" aria-hidden="true">DOCX</span>
+          <h3>Конвертация Word</h3>
+          <ul>
+            <li>DOCX → PDF;</li>
+            <li>DOCX → PNG;</li>
+            <li>DOCX → JPG.</li>
+          </ul>
+          <p>При конвертации в изображения каждая выбранная страница сохраняется отдельным файлом.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon" aria-hidden="true">PDF</span>
+          <h3>Работа с PDF</h3>
+          <ul>
+            <li>PDF → JPG;</li>
+            <li>PDF → PNG;</li>
+            <li>объединение PDF;</li>
+            <li>сжатие PDF.</li>
+          </ul>
+          <p>Можно обрабатывать весь документ или только выбранные страницы.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon" aria-hidden="true">IMG</span>
+          <h3>Работа с изображениями</h3>
+          <ul>
+            <li>PNG и JPG → PDF;</li>
+            <li>сжатие PNG и JPG;</li>
+            <li>изменение размера с сохранением пропорций.</li>
+          </ul>
+          <p>За один раз можно выбрать несколько изображений.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="page-rules-section" id="page-selection" aria-labelledby="page-rules-title">
+      <div class="section-shell compact-shell">
+        <div class="section-intro">
+          <div class="eyebrow">Единые правила во всех режимах</div>
+          <h2 id="page-rules-title">Выбирайте страницы в любом порядке</h2>
+          <p>
+            В каждом режиме, где доступно поле выбора страниц, используются одинаковые правила.
+            Можно указывать отдельные страницы, прямые и обратные диапазоны, менять порядок и указывать одну и ту же страницу больше одного раза.
+          </p>
+        </div>
+        <div class="page-rules-card">
+          <table>
+            <thead><tr><th>Введено</th><th>Результат</th></tr></thead>
+            <tbody>
+              <tr><td><code>1-5</code></td><td>страницы 1, 2, 3, 4, 5</td></tr>
+              <tr><td><code>5-1</code></td><td>страницы 5, 4, 3, 2, 1</td></tr>
+              <tr><td><code>7, 1-3</code></td><td>страницы 7, 1, 2, 3</td></tr>
+              <tr><td><code>3, 1-3</code></td><td>страницы 3, 1, 2, 3</td></tr>
+            </tbody>
+          </table>
+          <p class="rules-note">Пробелы необязательны. Нумерация страниц начинается с 1.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="merge-section section-shell" aria-labelledby="merge-title">
+      <div class="unique-feature-card">
+        <div class="unique-mark" aria-hidden="true">PDF+</div>
+        <div>
+          <div class="eyebrow">Ещё одна уникальная функциональность</div>
+          <h2 id="merge-title">Объединяйте любое количество PDF</h2>
+          <p>
+            Добавляйте PDF-файлы из разных папок и для каждого файла отдельно выбирайте нужные страницы,
+            диапазоны и их последовательность. Файлы попадут в итоговый PDF в порядке списка,
+            а внутри каждого из них действуют <a class="inline-link" href="#page-selection">общие правила выбора страниц</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits-section section-shell" aria-labelledby="benefits-title">
+      <div class="section-intro">
+        <div class="eyebrow">Без лишних сложностей</div>
+        <h2 id="benefits-title">Почему это удобно</h2>
+      </div>
+      <div class="benefit-grid">
+        <article><strong>Бесплатно</strong><span>Без подписки и оплаты за количество обработанных файлов.</span></article>
+        <article><strong>Локально</strong><span>Документы обрабатываются на вашем компьютере и не загружаются на сервер.</span></article>
+        <article><strong>Гибко</strong><span>Выбирайте страницы, диапазоны, последовательность и параметры обработки.</span></article>
+        <article><strong>Просто</strong><span>Для обычной задачи достаточно выбрать файлы и запустить обработку.</span></article>
+      </div>
+    </section>
+
+    <section class="ghostscript-cta section-shell" aria-labelledby="compression-title">
+      <div class="ghostscript-summary">
+        <div class="ghostscript-mark" aria-hidden="true">GS</div>
+        <div>
+          <h2 id="compression-title">Хотите сильнее сжимать PDF?</h2>
+          <p>Установите бесплатный Ghostscript — ScanItEasy найдёт его автоматически.</p>
+          <a class="inline-link" href="ghostscript/">Посмотреть инструкцию по установке</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="result-section section-shell" aria-label="Важное пояснение">
+      <p class="disclaimer">
+        ScanItEasy не заверяет документы и не создаёт подписи или печати.
+        Программа только обрабатывает предоставленные пользователем страницы.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>ScanItEasy</span>
+    <nav class="footer-contacts" aria-label="Контакты разработчика">
+      <a href="mailto:contact@formacode.dev?subject=ScanItEasy%20feedback">contact@formacode.dev</a>
+      <a href="https://t.me/PavelCraftRobot" target="_blank" rel="noopener noreferrer">Telegram: @PavelCraftRobot</a>
+      <a href="https://github.com/PavelCraft/ScanItEasy" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </nav>
+  </footer>
+
+  <dialog class="image-dialog" id="image-dialog">
+    <button class="dialog-close" type="button" aria-label="Закрыть">&#215;</button>
+    <img id="dialog-image" src="" alt="">
+    <p id="dialog-caption"></p>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Пошаговая установка Ghostscript для сжатия PDF в ScanItEasy.">
+  <title>Установка Ghostscript — ScanItEasy</title>
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../ghostscript.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../" aria-label="ScanItEasy — на главную">
+      <img class="brand-logo" src="../assets/scaniteasy-logo.png" alt="">
+      <span>ScanItEasy</span>
+    </a>
+    <nav class="header-nav" aria-label="Навигация">
+      <a class="header-link" href="../#top">Возможности ScanItEasy</a>
+      <a class="header-link is-active" href="./" aria-current="page">Ghostscript</a>
+      <span class="language-switch" aria-label="Выбор языка">
+        <a class="is-active" href="./" lang="ru" aria-current="page">RU</a>
+        <a href="../en/ghostscript/" lang="en">EN</a>
+      </span>
+    </nav>
+  </header>
+  <main id="top">
+    <section class="ghostscript-section" id="ghostscript" aria-labelledby="ghostscript-title">
+      <div class="section-shell">
+        <div class="section-intro">
+          <div class="eyebrow">Дополнительное сжатие</div>
+          <h2 id="ghostscript-title">Как установить Ghostscript</h2>
+          <p>
+            ScanItEasy работает и без Ghostscript. Но при сжатии PDF Ghostscript
+            может заметно сильнее уменьшить размер файла.
+          </p>
+        </div>
+
+        <div class="ghostscript-summary">
+          <div class="ghostscript-mark" aria-hidden="true">GS</div>
+          <div>
+            <h3>Устанавливается один раз</h3>
+            <p>
+              После установки ScanItEasy найдёт Ghostscript автоматически.
+              Указывать путь вручную не нужно.
+            </p>
+          </div>
+        </div>
+
+        <ol class="install-steps">
+          <li>
+            <span class="step-number">1</span>
+            <div>
+              <h3>Скачайте Ghostscript</h3>
+              <p>Перейдите на официальный сайт разработчика Artifex и скачайте установщик для Windows.</p>
+              <a class="primary-link" href="https://ghostscript.com/releases/gsdnld.html" target="_blank" rel="noopener noreferrer">Скачать Ghostscript</a>
+              <figure class="install-shot">
+                <button class="install-image-button" type="button" data-lightbox data-caption="Ссылки Windows 32 bit и Windows 64 bit на официальной странице Ghostscript">
+                  <img src="../assets/Install%20Ghostscript/1.png" alt="Выбор Windows 32 bit или Windows 64 bit на сайте Ghostscript">
+                </button>
+                <figcaption>Выберите ссылку в строке Windows нужной разрядности. Если вы не знаете разрядность системы, перейдите к <a class="inline-link" href="#system-type">следующему шагу</a>, а затем вернитесь сюда.</figcaption>
+              </figure>
+            </div>
+          </li>
+          <li class="optional-step" id="system-type">
+            <span class="step-number">2</span>
+            <div>
+              <h3>Узнайте разрядность Windows <span class="optional-label">если не знаете</span></h3>
+              <p>Если разрядность уже известна, пропустите этот шаг.</p>
+              <div class="architecture-help">
+                <ol>
+                  <li>Нажмите <kbd>Win</kbd> + <kbd>R</kbd>.</li>
+                  <li>Введите <span class="copy-command"><code>msinfo32</code><button type="button" data-copy="msinfo32" data-copy-label="Скопировать команду" data-copied-label="Команда скопирована" aria-label="Скопировать команду msinfo32" title="Скопировать"><span aria-hidden="true">⧉</span></button></span> и нажмите <kbd>Enter</kbd>.</li>
+                  <li>В окне «Сведения о системе» найдите строку «Тип».</li>
+                </ol>
+                <p><strong>Компьютер на базе x64</strong> — скачайте 64 bit; <strong>на базе x86</strong> — 32 bit.</p>
+              </div>
+              <div class="instruction-carousel" data-carousel>
+                <div class="carousel-viewport">
+                  <figure class="carousel-slide is-active"><button class="install-image-button" type="button" data-lightbox data-caption="Введите msinfo32 в окне «Выполнить»"><img src="../assets/Install%20Ghostscript/2ru.png" alt="Команда msinfo32 в окне Выполнить"></button><figcaption>1. Введите <span class="copy-command"><code>msinfo32</code><button type="button" data-copy="msinfo32" data-copy-label="Скопировать команду" data-copied-label="Команда скопирована" aria-label="Скопировать команду msinfo32" title="Скопировать"><span aria-hidden="true">⧉</span></button></span> и нажмите OK.</figcaption></figure>
+                  <figure class="carousel-slide"><button class="install-image-button" type="button" data-lightbox data-caption="Строка «Тип» в сведениях о системе"><img src="../assets/Install%20Ghostscript/3ru.png" alt="Строка Тип в окне Сведения о системе"></button><figcaption>2. Найдите строку «Тип».</figcaption></figure>
+                </div>
+                <div class="carousel-controls"><button type="button" data-carousel-prev aria-label="Предыдущий скриншот">‹</button><span data-carousel-counter>1 / 2</span><button type="button" data-carousel-next aria-label="Следующий скриншот">›</button></div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="step-number">3</span>
+            <div>
+              <h3>Установите Ghostscript</h3>
+              <p>Откройте скачанный EXE-файл и пройдите установку с предложенными параметрами.</p>
+              <div class="instruction-carousel" data-carousel>
+                <div class="carousel-viewport">
+                  <figure class="carousel-slide is-active"><button class="install-image-button" type="button" data-lightbox data-caption="Установка Ghostscript: нажмите Next"><img src="../assets/Install%20Ghostscript/4.png" alt="Приветствие установщика Ghostscript, кнопка Next"></button><figcaption>1. Нажмите Next.</figcaption></figure>
+                  <figure class="carousel-slide"><button class="install-image-button" type="button" data-lightbox data-caption="Установка Ghostscript: примите лицензию"><img src="../assets/Install%20Ghostscript/5.png" alt="Лицензия Ghostscript, кнопка I Agree"></button><figcaption>2. Нажмите I Agree.</figcaption></figure>
+                  <figure class="carousel-slide"><button class="install-image-button" type="button" data-lightbox data-caption="Установка Ghostscript: нажмите Install"><img src="../assets/Install%20Ghostscript/6.png" alt="Выбор папки и кнопка Install"></button><figcaption>3. Оставьте предложенную папку и нажмите Install.</figcaption></figure>
+                  <figure class="carousel-slide"><button class="install-image-button" type="button" data-lightbox data-caption="Установка Ghostscript: нажмите Finish"><img src="../assets/Install%20Ghostscript/7.png" alt="Завершение установки Ghostscript, кнопка Finish"></button><figcaption>4. Нажмите Finish.</figcaption></figure>
+                  <figure class="carousel-slide"><button class="install-image-button" type="button" data-lightbox data-caption="Установка Ghostscript завершена"><img src="../assets/Install%20Ghostscript/8.png" alt="Сообщение Installation Complete, кнопка OK"></button><figcaption>5. Если появится это окно, нажмите OK или закройте его крестиком в правом верхнем углу.</figcaption></figure>
+                </div>
+                <div class="carousel-controls"><button type="button" data-carousel-prev aria-label="Предыдущий скриншот">‹</button><span data-carousel-counter>1 / 5</span><button type="button" data-carousel-next aria-label="Следующий скриншот">›</button></div>
+              </div>
+              <p>
+                После установки перезапустите ScanItEasy: закройте приложение и запустите его снова.
+                Перезагружать компьютер обычно не требуется.
+              </p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="help-note">
+          <strong>Ghostscript всё ещё не найден?</strong>
+          <p>
+            Убедитесь, что установка завершилась без ошибки, и перезапустите ScanItEasy.
+            При необходимости скачайте свежий установщик с официального сайта и установите его повторно.
+          </p>
+          <a href="https://ghostscript.readthedocs.io/en/latest/Install.html" target="_blank" rel="noopener noreferrer">Официальная инструкция Ghostscript</a>
+        </div>
+      </div>
+    </section>
+
+
+  </main>
+  <footer class="site-footer">
+    <span>ScanItEasy</span>
+    <nav class="footer-contacts" aria-label="Контакты разработчика">
+      <a href="mailto:contact@formacode.dev?subject=ScanItEasy%20feedback">contact@formacode.dev</a>
+      <a href="https://t.me/PavelCraftRobot" target="_blank" rel="noopener noreferrer">Telegram: @PavelCraftRobot</a>
+      <a href="https://github.com/PavelCraft/ScanItEasy" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </nav>
+  </footer>
+  <dialog class="image-dialog" id="image-dialog">
+    <button class="dialog-close" type="button" aria-label="Закрыть">&#215;</button>
+    <img id="dialog-image" src="" alt="">
+    <p id="dialog-caption"></p>
+  </dialog>
+</body>
+</html>

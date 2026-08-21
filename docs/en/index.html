@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ScanItEasy helps you convert, combine and process documents, PDFs and images quickly, flexibly and free of charge.">
+  <title>ScanItEasy — documents, PDFs and images</title>
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="ScanItEasy — back to top">
+      <img class="brand-logo" src="../assets/scaniteasy-logo.png" alt="">
+      <span>ScanItEasy</span>
+    </a>
+    <nav class="header-nav" aria-label="Navigation">
+      <a class="header-link" href="#top">ScanItEasy overview</a>
+      <a class="header-link" href="ghostscript/">Ghostscript</a>
+      <span class="language-switch" aria-label="Choose language">
+        <a href="../" lang="ru">RU</a>
+        <a class="is-active" href="./" lang="en" aria-current="page">EN</a>
+      </span>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero section-shell" aria-labelledby="hero-title">
+      <div class="eyebrow">Documents, PDFs and images</div>
+      <h1 id="hero-title">Convert and combine files quickly, simply and free of charge</h1>
+      <p class="product-intro">
+        ScanItEasy performs everyday operations with documents and images locally on your computer:
+        from Word and PDF conversion to flexible page selection and simulation of scanned, bound documents.
+      </p>
+      <div class="hero-actions">
+        <a class="primary-link" href="#scan-simulation">Explore the main mode</a>
+        <a class="secondary-link" href="#other-features">Other features</a>
+      </div>
+
+      <div class="featured-mode" id="scan-simulation">
+        <div class="eyebrow">Unique functionality</div>
+        <h2>Scan simulation mode</h2>
+        <p class="featured-lead">Upload a Word document and its final part — get one finished PDF.</p>
+      </div>
+      <div class="result-card hero-result">
+        <div class="result-icon" aria-hidden="true">PDF</div>
+        <div>
+          <h2>What the app does</h2>
+          <p>
+            Combines the selected document parts, turns electronic pages into black and white,
+            and adds visual binding elements.
+          </p>
+        </div>
+      </div>
+      <p class="hero-copy">
+        The main Word file may contain any document pages. The final part — for example,
+        a signed or certified page — is selected separately. ScanItEasy combines everything
+        and simulates a scan of a physically bound document.
+      </p>
+
+      <div class="transformation" aria-label="Document before and after processing">
+        <article class="document-state before-state">
+          <div class="state-heading">
+            <span class="state-number">1</span>
+            <div>
+              <h2>What you provide</h2>
+              <p>Two source files.</p>
+            </div>
+          </div>
+          <div class="input-files">
+            <article class="input-file">
+              <div class="file-heading">
+                <span class="file-badge word-badge">DOCX</span>
+                <div>
+                  <h3>Word document</h3>
+                  <p>2 pages</p>
+                </div>
+              </div>
+              <button class="source-preview source-stack" type="button" data-open-page="before" data-page-index="0" aria-label="Show the Word document pages">
+                <img src="../assets/До/Перевод паспорта гражданина Листенбурга_pymu_page_002.png" alt="Second page of the Word document" loading="lazy">
+                <img src="../assets/До/Перевод паспорта гражданина Листенбурга_pymu_page_001.png" alt="First page of the Word document">
+              </button>
+              <p class="file-caption">The main document pages are contained in one file.</p>
+            </article>
+
+            <span class="input-plus" aria-label="and">+</span>
+
+            <article class="input-file">
+              <div class="file-heading">
+                <span class="file-badge scan-badge">PNG/PDF</span>
+                <div>
+                  <h3>Final part</h3>
+                  <p>selected separately</p>
+                </div>
+              </div>
+              <button class="source-preview single-source" type="button" data-open-page="before" data-page-index="2" aria-label="Show the final document part">
+                <img src="../assets/До/not-notary-translation-light.png" alt="Final part with signatures and stamps" loading="lazy">
+              </button>
+              <p class="file-caption">For example, a scanned page containing signatures and stamps.</p>
+            </article>
+          </div>
+          <ul class="state-list">
+            <li>select the main Word file;</li>
+            <li>then add the final part of the document.</li>
+          </ul>
+        </article>
+
+        <div class="process-arrow" aria-hidden="true">
+          <span>ScanItEasy</span>
+          <svg viewBox="0 0 120 48" role="img">
+            <path d="M4 24h101M88 7l19 17-19 17"></path>
+          </svg>
+        </div>
+
+        <article class="document-state after-state">
+          <div class="state-heading">
+            <span class="state-number">2</span>
+            <div>
+              <h2>What you get</h2>
+              <p>One finished file.</p>
+            </div>
+          </div>
+          <div class="output-heading">
+            <span class="file-badge pdf-badge">PDF</span>
+            <div>
+              <h3>Finished document</h3>
+              <p>All pages in one PDF</p>
+            </div>
+          </div>
+          <button class="paper-stack" type="button" data-open-page="after" aria-label="Show pages after processing">
+            <img src="../assets/После/Перевод паспорта гражданина Листенбурга_page_003.png" alt="Final page of the finished PDF" loading="lazy">
+            <img src="../assets/После/Перевод паспорта гражданина Листенбурга_page_002.png" alt="Electronic page after scan simulation" loading="lazy">
+            <img src="../assets/После/Перевод паспорта гражданина Листенбурга_page_001.png" alt="First page after scan simulation">
+          </button>
+          <ul class="state-list">
+            <li>the source parts are combined into one PDF;</li>
+            <li>electronic pages look as if they were printed in black and white and scanned;</li>
+            <li>ribbons and folds make the document look physically bound.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="comparison-section" id="how-it-works" aria-labelledby="comparison-title">
+      <div class="section-shell">
+        <div class="section-intro">
+          <div class="eyebrow">Take a closer look</div>
+          <h2 id="comparison-title">The same page before and after</h2>
+          <p>Switch the processing state or move between document pages.</p>
+        </div>
+
+        <div class="comparison-card">
+          <div class="view-switch" role="group" aria-label="Document state">
+            <button class="switch-button is-active" type="button" data-view="before" aria-pressed="true">Before</button>
+            <button class="switch-button" type="button" data-view="after" aria-pressed="false">After</button>
+          </div>
+          <div class="viewer">
+            <button class="page-arrow previous" type="button" aria-label="Previous page">&#8592;</button>
+            <button class="page-image-button" type="button" aria-label="Open a larger image">
+              <img id="comparison-image" src="../assets/До/Перевод паспорта гражданина Листенбурга_pymu_page_001.png" alt="First page before processing">
+            </button>
+            <button class="page-arrow next" type="button" aria-label="Next page">&#8594;</button>
+          </div>
+          <div class="viewer-footer">
+            <div>
+              <strong id="page-title">Page 1 — source document</strong>
+              <p id="page-description">The source image is placed on a regular white page.</p>
+            </div>
+            <span class="page-counter" id="page-counter">1 / 3</span>
+          </div>
+          <div class="page-dots" role="group" aria-label="Select page">
+            <button class="page-dot is-active" type="button" data-page="0" aria-label="Page 1" aria-current="true"></button>
+            <button class="page-dot" type="button" data-page="1" aria-label="Page 2"></button>
+            <button class="page-dot" type="button" data-page="2" aria-label="Page 3"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-section section-shell" id="other-features" aria-labelledby="features-title">
+      <div class="section-intro">
+        <div class="eyebrow">More than scan simulation</div>
+        <h2 id="features-title">Other ScanItEasy features</h2>
+        <p>Select an operation, add your files and, when necessary, configure the pages and output quality.</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <span class="feature-icon" aria-hidden="true">DOCX</span>
+          <h3>Word conversion</h3>
+          <ul>
+            <li>DOCX → PDF;</li>
+            <li>DOCX → PNG;</li>
+            <li>DOCX → JPG.</li>
+          </ul>
+          <p>When converting to images, every selected page is saved as a separate file.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon" aria-hidden="true">PDF</span>
+          <h3>PDF tools</h3>
+          <ul>
+            <li>PDF → JPG;</li>
+            <li>PDF → PNG;</li>
+            <li>combine PDFs;</li>
+            <li>compress PDFs.</li>
+          </ul>
+          <p>You can process the entire document or only selected pages.</p>
+        </article>
+        <article class="feature-card">
+          <span class="feature-icon" aria-hidden="true">IMG</span>
+          <h3>Image tools</h3>
+          <ul>
+            <li>PNG and JPG → PDF;</li>
+            <li>compress PNG and JPG;</li>
+            <li>resize while preserving proportions.</li>
+          </ul>
+          <p>You can select several images at once.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="page-rules-section" id="page-selection" aria-labelledby="page-rules-title">
+      <div class="section-shell compact-shell">
+        <div class="section-intro">
+          <div class="eyebrow">The same rules in every mode</div>
+          <h2 id="page-rules-title">Select pages in any order</h2>
+          <p>
+            Every mode that provides a page-selection field follows the same rules.
+            You can enter individual pages, forward and reverse ranges, change their order and include the same page more than once.
+          </p>
+        </div>
+        <div class="page-rules-card">
+          <table>
+            <thead><tr><th>Input</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr><td><code>1-5</code></td><td>pages 1, 2, 3, 4, 5</td></tr>
+              <tr><td><code>5-1</code></td><td>pages 5, 4, 3, 2, 1</td></tr>
+              <tr><td><code>7, 1-3</code></td><td>pages 7, 1, 2, 3</td></tr>
+              <tr><td><code>3, 1-3</code></td><td>pages 3, 1, 2, 3</td></tr>
+            </tbody>
+          </table>
+          <p class="rules-note">Spaces are optional. Page numbering starts at 1.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="merge-section section-shell" aria-labelledby="merge-title">
+      <div class="unique-feature-card">
+        <div class="unique-mark" aria-hidden="true">PDF+</div>
+        <div>
+          <div class="eyebrow">Another unique functionality</div>
+          <h2 id="merge-title">Combine any number of PDFs</h2>
+          <p>
+            Add PDF files from different folders and select the required pages, ranges and sequence separately for each file.
+            Files are placed in the resulting PDF in list order, while each file follows the
+            <a class="inline-link" href="#page-selection">general page-selection rules</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits-section section-shell" aria-labelledby="benefits-title">
+      <div class="section-intro">
+        <div class="eyebrow">No unnecessary complexity</div>
+        <h2 id="benefits-title">Why it is convenient</h2>
+      </div>
+      <div class="benefit-grid">
+        <article><strong>Free</strong><span>No subscription or fees based on the number of processed files.</span></article>
+        <article><strong>Local</strong><span>Documents are processed on your computer and are not uploaded to a server.</span></article>
+        <article><strong>Flexible</strong><span>Select pages, ranges, sequence and processing parameters.</span></article>
+        <article><strong>Simple</strong><span>For an ordinary task, just select the files and start processing.</span></article>
+      </div>
+    </section>
+
+    <section class="ghostscript-cta section-shell" aria-labelledby="compression-title">
+      <div class="ghostscript-summary">
+        <div class="ghostscript-mark" aria-hidden="true">GS</div>
+        <div>
+          <h2 id="compression-title">Want stronger PDF compression?</h2>
+          <p>Install the free Ghostscript package — ScanItEasy will detect it automatically.</p>
+          <a class="inline-link" href="ghostscript/">View the installation guide</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="result-section section-shell" aria-label="Important information">
+      <p class="disclaimer">
+        ScanItEasy does not certify documents or create signatures or stamps.
+        It only processes pages supplied by the user.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>ScanItEasy</span>
+    <nav class="footer-contacts" aria-label="Developer contacts">
+      <a href="mailto:contact@formacode.dev?subject=ScanItEasy%20feedback">contact@formacode.dev</a>
+      <a href="https://t.me/PavelCraftRobot" target="_blank" rel="noopener noreferrer">Telegram: @PavelCraftRobot</a>
+      <a href="https://github.com/PavelCraft/ScanItEasy" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </nav>
+  </footer>
+
+  <dialog class="image-dialog" id="image-dialog">
+    <button class="dialog-close" type="button" aria-label="Close">&#215;</button>
+    <img id="dialog-image" src="" alt="">
+    <p id="dialog-caption"></p>
+  </dialog>
+</body>
+</html>

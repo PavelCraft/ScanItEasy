@@ -23,9 +23,15 @@ venv.bak/
 # Настройки IDE
 .idea/
 .vscode/
+*.code-workspace
 
 # Логи
 *.log
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # Файлы конфигурации
 *.sqlite3
@@ -39,6 +45,7 @@ media/
 # Файлы конфиденциальной информации
 *.env
 *.local
+acrobat_path.txt
 
 # Документы
 *.pdf
@@ -48,12 +55,8 @@ media/
 # Другое
 *.bak
 *.swp
+*.tmp
+.sie-*/
 .DS_Store
 Thumbs.db
-
-
-# Настройки IDE
-.idea/
-.vscode/
-*.code-workspace
 *.exe
