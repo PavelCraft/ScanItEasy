@@ -30,7 +30,7 @@ GREEN = "#2FA572"
 RED = "#C62828"
 DARK_RED = "#8B0000"
 TEXT = ("gray10", "gray90")
-APP_VERSION = "2.0.0"
+APP_VERSION = "2.1.0"
 GUIDE_URLS = {
     "ru": "https://pavelcraft.github.io/ScanItEasy/",
     "en": "https://pavelcraft.github.io/ScanItEasy/en/",
@@ -83,6 +83,9 @@ STRINGS = {
         "pages_placeholder": "Например: 7, 1-5 или 5-1",
         "select_images": "Выберите одно или несколько изображений", "choose_images": "Выбрать изображения",
         "select_pdfs": "Выберите два или более PDF-файлов", "add_files": "Добавить файлы",
+        "select_pdfs_to_compress": "Выберите один или несколько PDF-файлов",
+        "compression_different_folders": "Файлы выбраны из разных папок. При желании сохраните все результаты в одну папку.",
+        "choose_output_folder": "Выбрать папку для результатов",
         "merge_pages_placeholder": "Страницы: 7, 1-5 или 5-1; пусто — все",
         "open_result": "Открыть итоговый файл", "open_default": "В приложении по умолчанию",
         "open_acrobat": "В Adobe Acrobat на странице №", "images_type": "Изображения",
@@ -95,6 +98,7 @@ STRINGS = {
         "done": "Готово.", "compression_no_gain": "Уменьшить файл не удалось.",
         "compression_no_extra_gain": "Дополнительное сжатие не уменьшило файл.",
         "some_images_not_reduced": "Некоторые изображения уже были меньше полученных вариантов; для них новые файлы не созданы.",
+        "some_pdfs_not_reduced": "Некоторые PDF не удалось уменьшить; для них новые файлы не созданы.",
         "missing_pages": "Пропущены отсутствующие страницы: {pages}.",
         "word_document_open": "Документ открыт в Microsoft Word. Сохраните и закройте его, затем нажмите «Продолжить».",
         "output_locked": "Невозможно заменить файл «{filename}». Закройте его и нажмите «Продолжить».",
@@ -137,6 +141,9 @@ STRINGS = {
         "pages_placeholder": "For example: 7, 1-5 or 5-1",
         "select_images": "Select one or more images", "choose_images": "Choose images",
         "select_pdfs": "Select two or more PDF files", "add_files": "Add files",
+        "select_pdfs_to_compress": "Select one or more PDF files",
+        "compression_different_folders": "The files are from different folders. You can optionally save all results in one folder.",
+        "choose_output_folder": "Choose a results folder",
         "merge_pages_placeholder": "Pages: 7, 1-5 or 5-1; empty means all",
         "open_result": "Open the resulting file", "open_default": "In the default application",
         "open_acrobat": "In Adobe Acrobat on page No.", "images_type": "Images",
@@ -148,6 +155,7 @@ STRINGS = {
         "compression_no_gain": "The file could not be reduced.",
         "compression_no_extra_gain": "Additional compression did not reduce the file.",
         "some_images_not_reduced": "Some images were already smaller than the generated variants; no new files were created for them.",
+        "some_pdfs_not_reduced": "Some PDFs could not be reduced; no new files were created for them.",
         "missing_pages": "Missing pages were skipped: {pages}.",
         "word_document_open": "The document is open in Microsoft Word. Save and close it, then click Continue.",
         "output_locked": "Cannot replace “{filename}”. Close the file and click Continue.",
@@ -235,6 +243,17 @@ def detect_system_language() -> str:
     except (ValueError, TypeError):
         language = ""
     return "ru" if language.lower().startswith("ru") else "en"
+
+
+def is_multipage_pdf(filename: str) -> bool:
+    if Path(filename).suffix.lower() != ".pdf":
+        return False
+    try:
+        import pymupdf
+        with pymupdf.open(filename) as document:
+            return document.page_count > 1
+    except (OSError, ValueError, RuntimeError):
+        return False
 
 
 class ScanItEasyApp(ctk.CTk):
@@ -366,7 +385,18 @@ class ScanItEasyApp(ctk.CTk):
             )
 
     def menu_separator(self, row: int) -> None:
-        width, height, scale = 100, 6, 4
+        width, height = 100, 6
+        self._menu_separator_image = self.make_diamond_image(width, height)
+        separator = ctk.CTkLabel(
+            self, text="", image=self._menu_separator_image,
+            width=width, height=height,
+        )
+        separator.grid(row=row, column=0, padx=(130, 0), pady=(8, 3), sticky="w")
+
+    @staticmethod
+    def make_diamond_image(width: int, height: int) -> ctk.CTkImage:
+        """Create an antialiased flattened diamond in logical UI pixels."""
+        scale = 4
         source = Image.new("RGBA", (width * scale, height * scale), (0, 0, 0, 0))
         draw = ImageDraw.Draw(source)
         draw.polygon(
@@ -378,15 +408,10 @@ class ScanItEasyApp(ctk.CTk):
         separator_image = source.resize(
             (width * 2, height * 2), Image.Resampling.LANCZOS
         )
-        self._menu_separator_image = ctk.CTkImage(
+        return ctk.CTkImage(
             light_image=separator_image, dark_image=separator_image,
             size=(width, height),
         )
-        separator = ctk.CTkLabel(
-            self, text="", image=self._menu_separator_image,
-            width=width, height=height,
-        )
-        separator.grid(row=row, column=0, padx=(130, 0), pady=(8, 3), sticky="w")
 
     def menu_radio(self, parent, key: str, title: str, row: int) -> None:
         ctk.CTkRadioButton(
@@ -461,6 +486,11 @@ class ScanItEasyApp(ctk.CTk):
         self.selected_images = []
         self.merge_files = []
         self.merge_entries = {}
+        self.image_row_widgets = {}
+        self.merge_row_widgets = {}
+        self._file_drag = None
+        self._drag_indicator = None
+        self._drag_insertion = None
         title = self.tr(dict(MODES)[mode])
         self.back_button()
         ctk.CTkLabel(self, text=title, font=("Arial", 17, "bold")).grid(
@@ -496,7 +526,8 @@ class ScanItEasyApp(ctk.CTk):
             if mode == "convert_to_jpg_mode":
                 self.number_entry("jpeg_quality", self.tr("jpg_quality"), "85")
         elif mode == "compress_mode":
-            self.file_picker("pdf_path", self.tr("select_pdf"), self.file_types("pdf"))
+            self.merge_picker(self.tr("select_pdfs_to_compress"))
+            self.compression_output_controls()
             self.radio_group("profile", self.tr("quality"), ["high", "balanced", "small"],
                              "balanced", labels={"high": self.tr("quality_high"),
                              "balanced": self.tr("quality_balanced"),
@@ -629,14 +660,11 @@ class ScanItEasyApp(ctk.CTk):
             variable.set(filename)
             label.grid(row=2, column=0, pady=0, sticky="w")
             if key == "last_page_path":
-                show_pages = False
-                if Path(filename).suffix.lower() == ".pdf":
-                    try:
-                        import pymupdf
-                        with pymupdf.open(filename) as document:
-                            show_pages = document.page_count > 1
-                    except Exception:
-                        show_pages = False
+                self.set_field_visible("last_page_pages", False)
+                show_pages = is_multipage_pdf(filename)
+                if not show_pages:
+                    pages = self.fields["last_page_pages"]
+                    pages.delete(0, "end")
                 self.set_field_visible("last_page_pages", show_pages)
             self.after_idle(self.fit_window_to_content)
 
@@ -722,8 +750,8 @@ class ScanItEasyApp(ctk.CTk):
         )
         self.image_rows = ctk.CTkFrame(frame, fg_color="transparent")
 
-    def merge_picker(self) -> None:
-        frame = self.labeled_frame(self.tr("select_pdfs"))
+    def merge_picker(self, title: str | None = None) -> None:
+        frame = self.labeled_frame(title or self.tr("select_pdfs"))
         ctk.CTkButton(frame, text=self.tr("add_files"), command=self.select_merge_files).grid(
             row=1, column=0, sticky="w"
         )
@@ -734,12 +762,82 @@ class ScanItEasyApp(ctk.CTk):
             if filename not in self.merge_files:
                 self.merge_files.append(filename)
         self.render_merge_rows()
+        self.update_compression_output_controls()
+
+    def compression_output_controls(self) -> None:
+        self.compression_folder_frame = ctk.CTkFrame(
+            self.form, fg_color="transparent",
+        )
+        self.compression_folder_frame.grid(
+            row=self.form_row, column=0, pady=5, sticky="w",
+        )
+        self.form_row += 1
+        ctk.CTkLabel(
+            self.compression_folder_frame,
+            text=self.tr("compression_different_folders"),
+            wraplength=470, justify="left",
+        ).grid(row=0, column=0, sticky="w")
+        ctk.CTkButton(
+            self.compression_folder_frame,
+            text=self.tr("choose_output_folder"),
+            command=self.select_compression_output_folder,
+        ).grid(row=1, column=0, pady=(5, 0), sticky="w")
+        output_folder = ctk.StringVar(value="")
+        self.compression_folder_selection = ctk.CTkFrame(
+            self.compression_folder_frame, fg_color="transparent", width=470,
+        )
+        self.compression_folder_selection.grid(
+            row=2, column=0, pady=(4, 0), sticky="ew",
+        )
+        self.compression_folder_selection.grid_columnconfigure(0, weight=1)
+        self.compression_folder_label = ctk.CTkLabel(
+            self.compression_folder_selection, textvariable=output_folder,
+            text_color=GREEN, wraplength=400, justify="left", anchor="w",
+        )
+        self.compression_folder_label.grid(row=0, column=0, sticky="ew")
+        ctk.CTkButton(
+            self.compression_folder_selection, text="×", width=28, height=26,
+            fg_color="transparent", text_color="red", hover_color=DARK_RED,
+            command=self.clear_compression_output_folder,
+        ).grid(row=0, column=1, padx=(8, 0), sticky="ne")
+        self.compression_folder_selection.grid_remove()
+        self.fields["compression_output_folder"] = output_folder
+        self.compression_folder_frame.grid_remove()
+
+    def select_compression_output_folder(self) -> None:
+        folder = filedialog.askdirectory()
+        if folder:
+            self.fields["compression_output_folder"].set(folder)
+            self.compression_folder_selection.grid()
+            self.after_idle(self.fit_window_to_content)
+
+    def clear_compression_output_folder(self) -> None:
+        self.fields["compression_output_folder"].set("")
+        self.compression_folder_selection.grid_remove()
+        self.after_idle(self.fit_window_to_content)
+
+    def update_compression_output_controls(self) -> None:
+        if self.mode != "compress_mode" or not hasattr(
+            self, "compression_folder_frame",
+        ):
+            return
+        folders = {
+            os.path.normcase(str(Path(filename).resolve().parent))
+            for filename in self.merge_files
+        }
+        if len(folders) > 1:
+            self.compression_folder_frame.grid()
+        else:
+            self.compression_folder_frame.grid_remove()
+            self.clear_compression_output_folder()
+        self.after_idle(self.fit_window_to_content)
 
     def render_merge_rows(self) -> None:
         saved = {name: entry.get() for name, entry in self.merge_entries.items()}
         for child in self.merge_rows.winfo_children():
             child.destroy()
         self.merge_entries.clear()
+        self.merge_row_widgets.clear()
         if not self.merge_files:
             self.merge_rows.grid_forget()
             return
@@ -747,59 +845,89 @@ class ScanItEasyApp(ctk.CTk):
         for index, filename in enumerate(self.merge_files):
             row = ctk.CTkFrame(self.merge_rows, fg_color="transparent", width=470)
             row.grid(row=index * 2, column=0, sticky="ew", pady=(2, 0))
-            row.grid_columnconfigure(0, weight=1)
+            draggable = self.mode == "merge_pdf_mode"
+            name_column = 1 if draggable else 0
+            button_column = 2 if draggable else 1
+            name_width = 370 if draggable else 400
+            row.grid_columnconfigure(name_column, weight=1)
+            if draggable:
+                handle = ctk.CTkLabel(
+                    row, text="⠿", width=24, cursor="fleur", text_color="gray",
+                    font=("Segoe UI Symbol", 18),
+                )
+                handle.grid(row=0, column=0, padx=(0, 6), sticky="n")
+                self.bind_file_drag(handle, "merge", filename, row)
             ctk.CTkLabel(
-                row, text=Path(filename).name, width=400, anchor="w",
-                justify="left", wraplength=400,
-            ).grid(row=0, column=0, sticky="ew")
+                row, text=Path(filename).name, width=name_width, anchor="w",
+                justify="left", wraplength=name_width,
+            ).grid(row=0, column=name_column, sticky="ew")
             ctk.CTkButton(
                 row, text="×", width=28, height=26, fg_color="transparent",
                 text_color="red", hover_color=DARK_RED,
                 command=lambda item=filename: self.remove_merge_file(item),
-            ).grid(row=0, column=1, padx=(8, 0), sticky="ne")
-            entry = ctk.CTkEntry(
-                self.merge_rows, width=470,
-                placeholder_text=self.tr("merge_pages_placeholder"),
-            )
-            entry.grid(row=index * 2 + 1, column=0, sticky="w", pady=(0, 5))
-            if saved.get(filename):
-                entry.insert(0, saved[filename])
-            self.merge_entries[filename] = entry
+            ).grid(row=0, column=button_column, padx=(8, 0), sticky="ne")
+            self.merge_row_widgets[filename] = row
+            if self.mode == "merge_pdf_mode":
+                entry = ctk.CTkEntry(
+                    self.merge_rows, width=470,
+                    placeholder_text=self.tr("merge_pages_placeholder"),
+                )
+                entry.grid(row=index * 2 + 1, column=0, sticky="w", pady=(0, 5))
+                if saved.get(filename):
+                    entry.insert(0, saved[filename])
+                self.merge_entries[filename] = entry
         self.after_idle(self.fit_window_to_content)
 
     def remove_merge_file(self, filename: str) -> None:
         if filename in self.merge_files:
             self.merge_files.remove(filename)
         self.render_merge_rows()
+        self.update_compression_output_controls()
 
     def select_images(self) -> None:
         files = list(filedialog.askopenfilenames(filetypes=self.file_types("images")))
         if files:
-            self.selected_images = files
+            for filename in files:
+                if filename not in self.selected_images:
+                    self.selected_images.append(filename)
             self.render_image_rows()
 
     def render_image_rows(self) -> None:
         for child in self.image_rows.winfo_children():
             child.destroy()
+        self.image_row_widgets.clear()
         if not self.selected_images:
             self.image_rows.grid_forget()
         else:
             self.image_rows.grid(row=2, column=0, pady=(6, 0), sticky="w")
-            for filename in self.selected_images:
+            self.image_rows.grid_columnconfigure(0, weight=1)
+            for index, filename in enumerate(self.selected_images):
                 row = ctk.CTkFrame(
                     self.image_rows, fg_color="transparent", width=470,
                 )
-                row.pack(fill="x", anchor="w", pady=1)
-                row.grid_columnconfigure(0, weight=1)
+                row.grid(row=index, column=0, sticky="ew", pady=(1, 1))
+                draggable = self.mode == "images_to_pdf_mode"
+                name_column = 1 if draggable else 0
+                button_column = 2 if draggable else 1
+                name_width = 370 if draggable else 400
+                row.grid_columnconfigure(name_column, weight=1)
+                if draggable:
+                    handle = ctk.CTkLabel(
+                        row, text="⠿", width=24, cursor="fleur",
+                        text_color="gray", font=("Segoe UI Symbol", 18),
+                    )
+                    handle.grid(row=0, column=0, padx=(0, 6), sticky="n")
+                    self.bind_file_drag(handle, "image", filename, row)
                 ctk.CTkLabel(
-                    row, text=Path(filename).name, width=400, anchor="w",
-                    justify="left", wraplength=400,
-                ).grid(row=0, column=0, sticky="ew")
+                    row, text=Path(filename).name, width=name_width, anchor="w",
+                    justify="left", wraplength=name_width,
+                ).grid(row=0, column=name_column, sticky="ew")
                 ctk.CTkButton(
                     row, text="×", width=28, height=26, fg_color="transparent",
                     text_color="red", hover_color=DARK_RED,
                     command=lambda item=filename: self.remove_image(item),
-                ).grid(row=0, column=1, padx=(8, 0), sticky="ne")
+                ).grid(row=0, column=button_column, padx=(8, 0), sticky="ne")
+                self.image_row_widgets[filename] = row
         if self.mode == "compress_images_mode":
             self.toggle_image_compression()
         elif self.mode == "resize_images_mode":
@@ -814,6 +942,157 @@ class ScanItEasyApp(ctk.CTk):
         if filename in self.selected_images:
             self.selected_images.remove(filename)
         self.render_image_rows()
+
+    def bind_file_drag(self, handle, kind: str, filename: str, row) -> None:
+        handle.bind(
+            "<ButtonPress-1>",
+            lambda event: self.start_file_drag(event, kind, filename, row),
+        )
+        handle.bind("<B1-Motion>", self.move_file_drag)
+        handle.bind("<ButtonRelease-1>", self.finish_file_drag)
+
+    def start_file_drag(self, event, kind: str, filename: str, row) -> str:
+        self._file_drag = (kind, filename, row)
+        row.configure(fg_color=("gray85", "gray25"))
+        self.update_file_drag_indicator(event.y_root)
+        return "break"
+
+    def move_file_drag(self, event) -> str:
+        if self._file_drag is None:
+            return "break"
+        canvas = self.form._parent_canvas
+        pointer_y = event.y_root
+        top = canvas.winfo_rooty()
+        bottom = top + canvas.winfo_height()
+        if pointer_y < top + 30:
+            canvas.yview_scroll(-1, "units")
+        elif pointer_y > bottom - 30:
+            canvas.yview_scroll(1, "units")
+        self.update_idletasks()
+        self.update_file_drag_indicator(pointer_y)
+        return "break"
+
+    def update_file_drag_indicator(self, pointer_y: int) -> None:
+        if self._file_drag is None:
+            return
+        kind, _filename, _row = self._file_drag
+        items = self.merge_files if kind == "merge" else self.selected_images
+        rows = self.merge_row_widgets if kind == "merge" else self.image_row_widgets
+        available = [(item, rows[item]) for item in items if item in rows]
+        if not available:
+            return
+        current_insertion = sum(
+            widget.winfo_rooty() + widget.winfo_height() / 2 <= pointer_y
+            for _item, widget in available
+        )
+        if (
+            current_insertion == self._drag_insertion
+            and self._drag_indicator is not None
+            and self._drag_indicator.winfo_exists()
+        ):
+            return
+        self.reset_file_drag_spacing(kind)
+        self.update_idletasks()
+        insertion = sum(
+            widget.winfo_rooty() + widget.winfo_height() / 2 <= pointer_y
+            for _item, widget in available
+        )
+        parent = self.merge_rows if kind == "merge" else self.image_rows
+        gap = 20
+        if insertion < len(available):
+            available[insertion][1].grid_configure(pady=(gap, 0))
+        elif kind == "merge" and available[-1][0] in self.merge_entries:
+            last_entry = self.merge_entries[available[-1][0]]
+            last_entry.grid_configure(pady=(0, gap))
+        else:
+            last_row = available[-1][1]
+            last_row.grid_configure(pady=(1, gap))
+        self.update_idletasks()
+        widget_scale = available[0][1]._get_widget_scaling()
+        if insertion < len(available):
+            line_y = available[insertion][1].winfo_y() / widget_scale - gap / 2
+        elif kind == "merge" and available[-1][0] in self.merge_entries:
+            last_entry = self.merge_entries[available[-1][0]]
+            line_y = (
+                (last_entry.winfo_y() + last_entry.winfo_height()) / widget_scale
+                + gap / 2
+            )
+        else:
+            last_row = available[-1][1]
+            line_y = (
+                (last_row.winfo_y() + last_row.winfo_height()) / widget_scale
+                + gap / 2
+            )
+        if self._drag_indicator is None or not self._drag_indicator.winfo_exists():
+            self._drag_indicator_image = self.make_diamond_image(100, 6)
+            self._drag_indicator = ctk.CTkLabel(
+                parent, text="", image=self._drag_indicator_image,
+                width=100, height=6,
+            )
+        self._drag_indicator.place(
+            x=(470 - 100) / 2,
+            y=line_y - 3,
+        )
+        self._drag_indicator.lift()
+        self._drag_insertion = insertion
+
+    def reset_file_drag_spacing(self, kind: str) -> None:
+        if kind == "merge":
+            for row in self.merge_row_widgets.values():
+                if row.winfo_exists():
+                    row.grid_configure(pady=(2, 0))
+            for entry in self.merge_entries.values():
+                if entry.winfo_exists():
+                    entry.grid_configure(pady=(0, 5))
+        else:
+            for row in self.image_row_widgets.values():
+                if row.winfo_exists():
+                    row.grid_configure(pady=(1, 1))
+
+    def clear_file_drag_indicator(self, kind: str) -> None:
+        self.reset_file_drag_spacing(kind)
+        if self._drag_indicator is not None and self._drag_indicator.winfo_exists():
+            self._drag_indicator.destroy()
+        self._drag_indicator = None
+
+    def finish_file_drag(self, event) -> str:
+        if self._file_drag is None:
+            return "break"
+        kind, filename, dragged_row = self._file_drag
+        self.update_file_drag_indicator(event.y_root)
+        insertion = self._drag_insertion
+        self._file_drag = None
+        self._drag_insertion = None
+        self.clear_file_drag_indicator(kind)
+        items = self.merge_files if kind == "merge" else self.selected_images
+        if filename not in items or insertion is None:
+            if dragged_row.winfo_exists():
+                dragged_row.configure(fg_color="transparent")
+            return "break"
+        source = items.index(filename)
+        item = items.pop(source)
+        if insertion > source:
+            insertion -= 1
+        insertion = min(insertion, len(items))
+        items.insert(insertion, item)
+        if source != insertion:
+            if kind == "merge":
+                self.render_merge_rows()
+            else:
+                self.render_image_rows()
+        moved_row = (
+            self.merge_row_widgets.get(filename)
+            if kind == "merge" else self.image_row_widgets.get(filename)
+        )
+        if moved_row is not None and moved_row.winfo_exists():
+            moved_row.configure(fg_color=("gray85", "gray25"))
+            self.after(500, lambda row=moved_row: self.clear_drop_highlight(row))
+        return "break"
+
+    @staticmethod
+    def clear_drop_highlight(row) -> None:
+        if row.winfo_exists():
+            row.configure(fg_color="transparent")
 
     def fit_window_to_content(self) -> None:
         if not hasattr(self, "form") or not self.form.winfo_exists():
@@ -938,7 +1217,15 @@ class ScanItEasyApp(ctk.CTk):
                     self.field_value("is_compression_needed", False)
                 ),
             }
-        elif self.mode in {"grayscale_mode", "compress_mode", "convert_to_png_mode", "convert_to_jpg_mode"}:
+        elif self.mode == "compress_mode":
+            if not self.merge_files:
+                self.show_status(self.tr("choose_pdf_error"), error=True); return None
+            settings.update(
+                pdf_paths=list(self.merge_files),
+                profile=self.field_value("profile", "balanced"),
+                output_folder=self.field_value("compression_output_folder", ""),
+            )
+        elif self.mode in {"grayscale_mode", "convert_to_png_mode", "convert_to_jpg_mode"}:
             path = self.field_value("pdf_path", "")
             if not path:
                 self.show_status(self.tr("choose_pdf_error"), error=True); return None
@@ -1036,12 +1323,28 @@ class ScanItEasyApp(ctk.CTk):
             )
         else:
             self.show_status(text)
-        self.open_folder_button.grid(
-            row=0, column=1, padx=(20, 0), sticky="e"
-        )
+        result_folders = {
+            os.path.normcase(str(Path(output).resolve().parent))
+            for output in result.outputs
+        }
+        if not (self.mode == "compress_mode" and len(result_folders) > 1):
+            self.open_folder_button.grid(
+                row=0, column=1, padx=(20, 0), sticky="e"
+            )
         self.save_acrobat_preferences()
         if self.produces_pdf(self.mode) and result.outputs:
             self.handle_opening(result.outputs[0])
+            if (
+                self.mode == "compress_mode"
+                and self.field_value("open_result_file", True)
+            ):
+                prefer = self.field_value("open_method", "default") == "acrobat"
+                page = self.field_value("acrobat_page", "1")
+                for output in result.outputs[1:]:
+                    open_result(
+                        output, prefer, page,
+                        self.preferences.get("acrobat_path"),
+                    )
 
     def save_acrobat_preferences(self) -> None:
         if "open_result_file" not in self.fields: return

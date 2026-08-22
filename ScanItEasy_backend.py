@@ -595,18 +595,52 @@ def process_job(settings: dict, progress: Callable[[int], None] | None = None) -
                 atomic_pdf(compression.path, destination)
             outputs = [str(destination)]
         elif mode == "compress_mode":
-            source = Path(settings["pdf_path"]).resolve()
-            with tempfile.TemporaryDirectory(dir=source.parent, prefix=".sie-") as folder:
-                compression = compress_pdf_best(
-                    source, Path(folder), True, settings.get("profile", "balanced")
-                )
-                ghostscript_missing = compression.ghostscript_missing
-                if not compression.reduced:
-                    raise CompressionNoGainError(ghostscript_missing)
-                destination = source.with_name(f"{source.stem}{compression.suffix}.pdf")
-                ensure_replaceable(destination)
-                atomic_pdf(compression.path, destination)
-            outputs = [str(destination)]
+            filenames = settings.get("pdf_paths")
+            if not filenames and settings.get("pdf_path"):
+                filenames = [settings["pdf_path"]]
+            if not filenames:
+                raise ScanItEasyError("choose_pdf_error")
+            outputs = []
+            not_reduced = 0
+            selected_output_folder = settings.get("output_folder")
+            output_folder = (
+                Path(selected_output_folder).resolve()
+                if selected_output_folder else None
+            )
+            reserved_destinations: set[str] = set()
+            for index, filename in enumerate(filenames):
+                source = Path(filename).resolve()
+                work_parent = output_folder or source.parent
+                with tempfile.TemporaryDirectory(dir=work_parent, prefix=".sie-") as folder:
+                    compression = compress_pdf_best(
+                        source, Path(folder), True,
+                        settings.get("profile", "balanced"),
+                    )
+                    ghostscript_missing |= compression.ghostscript_missing
+                    if not compression.reduced:
+                        not_reduced += 1
+                    else:
+                        destination = (output_folder or source.parent) / (
+                            f"{source.stem}{compression.suffix}.pdf"
+                        )
+                        collision_number = 2
+                        destination_key = os.path.normcase(str(destination))
+                        while destination_key in reserved_destinations:
+                            destination = destination.with_name(
+                                f"{source.stem}{compression.suffix}"
+                                f"({collision_number}).pdf"
+                            )
+                            destination_key = os.path.normcase(str(destination))
+                            collision_number += 1
+                        reserved_destinations.add(destination_key)
+                        ensure_replaceable(destination)
+                        atomic_pdf(compression.path, destination)
+                        outputs.append(str(destination))
+                report(5 + round(90 * (index + 1) / len(filenames)))
+            if not outputs:
+                raise CompressionNoGainError(ghostscript_missing)
+            if not_reduced:
+                notices.append(Notice("some_pdfs_not_reduced"))
         elif mode in {"convert_to_png_mode", "convert_to_jpg_mode"}:
             kind = "jpeg" if mode == "convert_to_jpg_mode" else "png"
             outputs, skipped = pdf_to_images(Path(settings["pdf_path"]), kind, settings.get("pages"), int(settings.get("dpi", 200)), int(settings.get("jpeg_quality", 85)))

@@ -6,7 +6,7 @@
 
 ScanItEasy — бесплатное Windows-приложение для конвертации, объединения и обработки DOCX, PDF, PNG и JPG. Документы обрабатываются локально на компьютере.
 
-Текущая версия: **2.0.0**.
+Текущая версия: **2.1.0**.
 
 Главная особенность приложения — имитация сканирования: электронные страницы документа Word преобразуются так, будто их распечатали на чёрно-белом принтере, сшили лентой и отсканировали. Последнюю, уже подписанную или заверенную часть можно добавить отдельно.
 
@@ -19,7 +19,7 @@ ScanItEasy — бесплатное Windows-приложение для конв
 - выбор страниц отдельно для каждого PDF;
 - PNG/JPG → PDF, включая несколько изображений за один раз;
 - перевод PDF в чёрно-белый вид;
-- сжатие PDF, PNG и JPG;
+- пакетное сжатие одного или нескольких PDF, а также PNG и JPG;
 - изменение размера изображений с сохранением пропорций.
 
 Поля выбора страниц сохраняют указанный порядок, обратные диапазоны и повторы:
@@ -99,7 +99,7 @@ ScanItEasy ищет Ghostscript автоматически — вручную у
 
 ScanItEasy is a free Windows application for converting, combining and processing DOCX, PDF, PNG and JPG files. Documents are processed locally on the computer.
 
-Current version: **2.0.0**.
+Current version: **2.1.0**.
 
 Its main distinguishing feature is scan simulation: electronic Word pages are transformed to look as though they were printed in black and white, bound with ribbon and scanned. A final signed or certified part can be added separately.
 
@@ -112,7 +112,7 @@ Its main distinguishing feature is scan simulation: electronic Word pages are tr
 - independent page selection for every PDF;
 - PNG/JPG → PDF, including multiple images at once;
 - grayscale PDF conversion;
-- PDF, PNG and JPG compression;
+- batch compression of one or more PDFs, as well as PNG and JPG files;
 - proportional image resizing.
 
 Page-selection fields preserve order, reverse ranges and repeated pages:

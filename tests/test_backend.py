@@ -155,6 +155,63 @@ class PdfCompressionSelectionTests(unittest.TestCase):
         self.assertTrue(result.reduced)
         self.assertEqual(result.suffix, "_gs_pymu")
 
+    def test_batch_compression_keeps_successful_results(self):
+        second = self.folder / "second.pdf"
+        second.write_bytes(b"y" * 1000)
+
+        def compression(source, _work, _extra, _profile):
+            reduced = source == self.source
+            return backend.CompressionResult(
+                source, "_pymu" if reduced else "", reduced, False,
+            )
+
+        with mock.patch.object(
+            backend, "compress_pdf_best", side_effect=compression,
+        ), mock.patch.object(backend, "atomic_pdf"):
+            result = backend.process_job({
+                "mode": "compress_mode",
+                "pdf_paths": [str(self.source), str(second)],
+                "profile": "balanced",
+            })
+
+        self.assertTrue(result.success)
+        self.assertEqual(
+            [Path(path).name for path in result.outputs],
+            ["source_pymu.pdf"],
+        )
+        self.assertEqual(
+            [notice.code for notice in result.notices],
+            ["some_pdfs_not_reduced"],
+        )
+
+    def test_batch_output_folder_disambiguates_equal_names(self):
+        first_folder = self.folder / "first"
+        second_folder = self.folder / "second"
+        output_folder = self.folder / "output"
+        first_folder.mkdir()
+        second_folder.mkdir()
+        output_folder.mkdir()
+        sources = [first_folder / "document.pdf", second_folder / "document.pdf"]
+        for source in sources:
+            source.write_bytes(b"x" * 1000)
+
+        def compression(source, _work, _extra, _profile):
+            return backend.CompressionResult(source, "_pymu", True, False)
+
+        with mock.patch.object(
+            backend, "compress_pdf_best", side_effect=compression,
+        ), mock.patch.object(backend, "atomic_pdf"):
+            result = backend.process_job({
+                "mode": "compress_mode",
+                "pdf_paths": [str(source) for source in sources],
+                "output_folder": str(output_folder),
+            })
+
+        self.assertEqual(
+            [Path(path).name for path in result.outputs],
+            ["document_pymu.pdf", "document_pymu(2).pdf"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
