@@ -8,6 +8,8 @@ ScanItEasy — бесплатное Windows-приложение для конв
 
 Текущая версия: **2.1.0**.
 
+[Скачать ScanItEasy 2.1.0 для Windows](https://github.com/PavelCraft/ScanItEasy/releases/latest).
+
 Главная особенность приложения — имитация сканирования: электронные страницы документа Word преобразуются так, будто их распечатали на чёрно-белом принтере, сшили лентой и отсканировали. Последнюю, уже подписанную или заверенную часть можно добавить отдельно.
 
 ### Возможности
@@ -96,6 +98,8 @@ ScanItEasy ищет Ghostscript автоматически — вручную у
 [Инструкция по установке Ghostscript](https://pavelcraft.github.io/ScanItEasy/ghostscript/).
 
 ## English
+
+[Download ScanItEasy 2.1.0 for Windows](https://github.com/PavelCraft/ScanItEasy/releases/latest)
 
 ScanItEasy is a free Windows application for converting, combining and processing DOCX, PDF, PNG and JPG files. Documents are processed locally on the computer.
 
