@@ -60,3 +60,7 @@ acrobat_path.txt
 .DS_Store
 Thumbs.db
 *.exe
+
+/Данные от приложения ScanItEasy.txt
+
+*.msix
