@@ -160,7 +160,7 @@ class PdfCompressionSelectionTests(unittest.TestCase):
         second.write_bytes(b"y" * 1000)
 
         def compression(source, _work, _extra, _profile):
-            reduced = source == self.source
+            reduced = source.name == self.source.name
             return backend.CompressionResult(
                 source, "_pymu" if reduced else "", reduced, False,
             )
